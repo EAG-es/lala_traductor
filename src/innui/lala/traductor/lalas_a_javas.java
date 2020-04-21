@@ -11,11 +11,11 @@ import innui.contextos.contextos;
 import innui.contextos.i_eles;
 import innui.contextos.textos;
 import static innui.lala.traductor.lala_resultados.lala_resultados_salida_archivo;
-import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_final_bien;
 import static innui.lala.traductor.reglas_gramaticales_extendidas.lala_traductor_regla_en_curso;
 import java.io.File;
-import static innui.lala.traductor.reglas_gramaticales_extendidas.accion_tras_regla_0;
-import static innui.lala.traductor.reglas_gramaticales_extendidas.accion_tras_fin_opcion;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.id_mapa_tras_regla_0;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.id_mapa_tras_fin_opcion;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_bien;
 
 /**
  *
@@ -84,6 +84,9 @@ public class lalas_a_javas {
             ret = configurar_parametros_subaccion(contexto, lala_regla_gramatical.parametros_subaccion, error);
         }
         if (ret) {
+            ret = configurar_coma_parametro_subaccion(contexto, lala_regla_gramatical.coma_parametro_subaccion, error);
+        }
+        if (ret) {
             ret = configurar_nombre_m_s(contexto, lala_regla_gramatical.nombre_m_s, error);
         }
         if (ret) {
@@ -92,9 +95,6 @@ public class lalas_a_javas {
         if (ret) {
             ret = configurar_coma_pasa_parametro(contexto, lala_regla_gramatical.coma_pasa_parametro, error);
         }
-//        if (ret) {
-//            ret = configurar_variables(contexto, lala_regla_gramatical.variables, error);
-//        }
         if (ret) {
             ret = configurar_codigo_accion(contexto, lala_regla_gramatical.codigo_accion, error);
         }
@@ -248,7 +248,7 @@ public class lalas_a_javas {
         int pos = 0;
         reglas_gramaticales_extendidas regla_gramatical_extendida;
         regla_gramatical_extendida = contexto.leer(lala_traductor_regla_en_curso).dar();
-        if (regla_gramatical_extendida.estado.equals(estado_final_bien)) {
+        if (regla_gramatical_extendida.estado.equals(estado_bien)) {
             salida = contexto.leer(lala_resultados_salida_archivo).dar();
             ret = (salida != null);
             if (ret) {
@@ -324,7 +324,7 @@ public class lalas_a_javas {
     
     public boolean configurar_elementos_comunes(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_fin_opcion, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_fin_opcion, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -339,7 +339,7 @@ public class lalas_a_javas {
     public boolean configurar_inicio_lala(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -363,7 +363,7 @@ public class lalas_a_javas {
     public boolean configurar_programa_lala(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -378,7 +378,7 @@ public class lalas_a_javas {
     public boolean configurar_comentario_multilinea(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -573,7 +573,7 @@ public class lalas_a_javas {
     public boolean configurar_comentario_doc(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -588,7 +588,7 @@ public class lalas_a_javas {
     public boolean configurar_comentario_linea(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -603,7 +603,7 @@ public class lalas_a_javas {
     public boolean configurar_texto_libre_hasta_param(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -618,7 +618,7 @@ public class lalas_a_javas {
     public boolean configurar_texto_libre_hasta_return(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -633,7 +633,7 @@ public class lalas_a_javas {
     public boolean configurar_texto_libre_hasta_fin_comentario(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                boolean ret = true;
@@ -648,13 +648,13 @@ public class lalas_a_javas {
     public boolean configurar_parametros(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
                 obtener_texto((contextos) contexto, (textos) error);
                 ret = lala_resultado.escribir((contextos) contexto, " i_eles ", (textos) error);
-                parametros_num = 1;
+//                parametros_num = 1;
                 return new bools(ret);
             }
         });  
@@ -673,7 +673,7 @@ public class lalas_a_javas {
     public boolean configurar_parametros_subaccion(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -686,10 +686,26 @@ public class lalas_a_javas {
         return ret;
     }
     
+    public boolean configurar_coma_parametro_subaccion(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
+        boolean ret = true;
+        ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
+        regla_gramatical.acciones_tras_regla_mapa.put(",", new acciones.de_2 () {
+            @Override
+            protected bools ir(i_eles contexto, i_eles error) {
+                boolean ret = true;
+                obtener_texto((contextos) contexto, (textos) error);
+                ret = lala_resultado.escribir((contextos) contexto, " , i_eles ", (textos) error);
+                parametros_num = parametros_num + 1;
+                return new bools(ret);
+            }
+        });  
+        return ret;
+    }
+    
     public boolean configurar_nombre_m_s(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -715,7 +731,6 @@ public class lalas_a_javas {
                 boolean ret = true;
                 obtener_texto((contextos) contexto, (textos) error);
                 ret = lala_resultado.escribir((contextos) contexto, ",", (textos) error);
-                parametros_num = parametros_num + 1;
                 return new bools(ret);
             }
         });  
@@ -736,30 +751,6 @@ public class lalas_a_javas {
         });  
         return ret;
     }
-    
-//    public boolean configurar_variables(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
-//        boolean ret = true;
-//        ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-//        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.nombre_m_s.id, new acciones.de_2 () {
-//            @Override
-//            protected bools ir(i_eles contexto, i_eles error) {
-//                boolean ret = true;
-//                obtener_texto((contextos) contexto, (textos) error);
-//                ret = lala_resultado.escribir((contextos) contexto, ";", (textos) error);
-//                return new bools(ret);
-//            }
-//        });  
-//        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.nueva_linea.id, new acciones.de_2 () {
-//            @Override
-//            protected bools ir(i_eles contexto, i_eles error) {
-//                boolean ret = true;
-//                obtener_texto((contextos) contexto, (textos) error);
-//                ret = poner_linea_espacios((contextos) contexto, (textos) error);
-//                return new bools(ret);
-//            }
-//        });  
-//        return ret;
-//    }
     
     public boolean configurar_codigo_accion(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
@@ -797,7 +788,7 @@ public class lalas_a_javas {
     public boolean configurar_variable_nombre(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -897,7 +888,7 @@ public class lalas_a_javas {
     public boolean configurar_suma_4_espacios(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -912,7 +903,7 @@ public class lalas_a_javas {
     public boolean configurar_resta_4_espacios(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -927,7 +918,7 @@ public class lalas_a_javas {
     public boolean configurar_finalmente(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -992,7 +983,7 @@ public class lalas_a_javas {
     public boolean configurar_salir(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -1009,7 +1000,7 @@ public class lalas_a_javas {
     public boolean configurar_constante_numero(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -1058,21 +1049,16 @@ public class lalas_a_javas {
                 boolean ret = true;
                 obtener_texto((contextos) contexto, (textos) error);
                 if (ret) {
-                    ret = lala_resultado.escribir((contextos) contexto, ".", (textos) error);
+                    ret = lala_resultado.escribir((contextos) contexto, ". ", (textos) error);
                 }
                 return new bools(ret);
             }
         });
-        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.nombre_m_s.id, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.nombre_accion.id, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
-                String nombre_m_s;
-                nombre_m_s = obtener_texto((contextos) contexto, (textos) error);
-                ret = (nombre_m_s != null);
-                if (ret) {
-                    ret = lala_resultado.escribir((contextos) contexto, " " + nombre_m_s, (textos) error);
-                }
+                ret = poner_nombre_java((contextos) contexto, (textos) error);
                 return new bools(ret);
             }
         });
@@ -1121,7 +1107,7 @@ public class lalas_a_javas {
     public boolean configurar_llamada_acciones_linea(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -1136,8 +1122,7 @@ public class lalas_a_javas {
                 return new bools(ret);
             }
         });
-//        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.llamada_acciones_simple.id, new acciones.de_2 () {
-        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.llamada_accion.id, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(lala_regla_gramatical.llamada_accion_o_metodo.id, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;
@@ -1232,7 +1217,7 @@ public class lalas_a_javas {
     public boolean configurar_texto_libre_no_lala(contextos contexto, reglas_gramaticales regla_gramatical, textos error) {
         boolean ret = true;
         ret = configurar_elementos_comunes(contexto, regla_gramatical, error);
-        regla_gramatical.acciones_tras_regla_mapa.put(accion_tras_regla_0, new acciones.de_2 () {
+        regla_gramatical.acciones_tras_regla_mapa.put(id_mapa_tras_regla_0, new acciones.de_2 () {
             @Override
             protected bools ir(i_eles contexto, i_eles error) {
                 boolean ret = true;

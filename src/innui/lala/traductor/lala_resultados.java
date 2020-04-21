@@ -7,12 +7,13 @@ package innui.lala.traductor;
 
 import innui.contextos.contextos;
 import innui.contextos.textos;
-import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_final_bien;
 import static innui.lala.traductor.reglas_gramaticales_extendidas.lala_traductor_primera_regla_opcional;
 import static innui.lala.traductor.reglas_gramaticales_extendidas.lala_traductor_regla_en_curso;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_bien;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_con_errores;
 
 /**
  *
@@ -99,7 +100,9 @@ public class lala_resultados {
         regla_en_curso = contexto.leer(lala_traductor_regla_en_curso).dar();
         primera_regla_opcional = contexto.leer(lala_traductor_primera_regla_opcional).dar();
         if (primera_regla_opcional == null) {
-            if (regla_en_curso.estado.equals(estado_final_bien)) {
+            if (regla_en_curso.estado.equals(estado_bien)
+//                    || regla_en_curso.estado.equals(estado_con_errores)
+                    ) {
                 ret = hacer_temporal_definitivo(regla_en_curso.resultado_temporal_texto, error);
                 if (ret) {
                     printStream.print(texto);
@@ -108,7 +111,9 @@ public class lala_resultados {
                 ret = eliminar_temporal(regla_en_curso.resultado_temporal_texto, error);
             }
         } else {
-            if (regla_en_curso.estado.equals(estado_final_bien)) {
+            if (regla_en_curso.estado.equals(estado_bien)
+//                    || regla_en_curso.estado.equals(estado_con_errores)
+                    ) {
                 ret = escribir_temporal(texto, regla_en_curso.resultado_temporal_texto, error);
             } else {
                 ret = eliminar_temporal(regla_en_curso.resultado_temporal_texto, error);

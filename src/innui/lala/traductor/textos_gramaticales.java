@@ -25,6 +25,7 @@ public class textos_gramaticales {
     public String repetir_lectura = "";
     public char devuelta_letra = ((char) -1);
     public int linea_num = 1;
+    public int espacios_num = 0;
     
     public boolean abrir(File entrada, textos error) {
         boolean ret = true;
@@ -79,15 +80,19 @@ public class textos_gramaticales {
     public boolean devolver_texto(String texto, textos error) {
         boolean ret = true;
         int pos = 0;
-        if (devueltos_texto.isEmpty()) {
-            devueltos_texto = texto + repetir_lectura;
-        } else {
-            if (texto.endsWith(" ")) {
+//        if (devueltos_texto.isEmpty()) {
+//            devueltos_texto = texto + repetir_lectura;
+//        } else {
+//            if (texto.endsWith(" ")) {
                 devueltos_texto = texto + repetir_lectura + devueltos_texto;
-            } else {
-                devueltos_texto = texto + " " + repetir_lectura + devueltos_texto;
-            }
-        }
+//            } else {
+//                if (repetir_lectura.startsWith(" ")) {
+//                    devueltos_texto = texto + repetir_lectura + devueltos_texto;
+//                } else {
+//                    devueltos_texto = texto + " " + repetir_lectura + devueltos_texto;
+//                }
+//            }
+//        }
         repetir_lectura = "";
         pos = 0;
         while (true) {
@@ -128,6 +133,20 @@ public class textos_gramaticales {
         return letra;
     }
     
+    public char leer_con_linea_partida(textos error) {
+        boolean ret;
+        char letra;
+        letra = leer(error);
+        if (letra == '\\') {
+            error.poner("");
+            ret = saltar_linea_partida(error);
+            if (ret == false) {
+                letra = (char) -1;
+            }
+        }
+        return letra;
+    }
+    
     public boolean validar_lectura(boolean es_valida) {
         int pos;
         if (es_valida == false) {
@@ -157,12 +176,32 @@ public class textos_gramaticales {
         return es_valida;
     }
     
-    public boolean leer_texto_entre_espacios(textos texto_entre_espacios, textos error) {
+    public boolean saltar_linea_partida(textos error) {
         boolean ret = true;
-        String texto = "";
         char letra;
-        boolean es_letra = false;
-        try {
+        textos texto = new textos ();
+        error.poner("(" + linea_num + ")");
+        while (true) {
+            letra = leer(error);
+            if (letra == ((char) -1)) {
+                error.poner("(" + linea_num + ") " + "Fin de archivo inesperado. ");
+                ret = false;
+                break;
+            }
+            if (Character.isWhitespace(letra)) {
+                if (letra == '\n') {
+                    break;
+                }
+            } else {
+                error.poner("En una linea partida solo pueden haber espacios. ");
+                ret = false;
+                break;
+            }
+        }
+        if (ret) {
+            ret = leer_espacios(espacios_num, texto, error);
+        }
+        if (ret) {
             while (true) {
                 letra = leer(error);
                 if (letra == ((char) -1)) {
@@ -171,12 +210,52 @@ public class textos_gramaticales {
                     break;
                 }
                 if (Character.isWhitespace(letra)) {
+                    if (letra == '\n') {
+                        ret = false;
+                        error.poner("En una linea partida solo pueden haber un caracter nueva-linea. ");
+                        break;
+                    }
+                } else {
+                    if (letra != '\\') {
+                        ret = false;
+                        error.poner("Una linea partida solo pueden terminar en: \\ ");
+                    }
+                    break;
+                }
+            }
+        }
+        return validar_lectura(ret);
+    }
+    
+    public boolean leer_texto_entre_espacios(textos texto_entre_espacios, textos error) {
+        boolean ret = true;
+        String texto = "";
+        char letra;
+        boolean es_letra = false;
+        try {
+            error.poner("(" + linea_num + ")");
+            while (true) {
+                if (texto.isEmpty()) {
+                    letra = leer_con_linea_partida (error);
+                    if (letra == ((char) -1)) {
+                        ret = false;
+                        break;
+                    }
+                } else {
+                    letra = leer(error);
+                    if (letra == ((char) -1)) {
+                        error.poner("(" + linea_num + ") " + "Fin de archivo inesperado. ");
+                        ret = false;
+                        break;
+                    }
+                }
+                if (Character.isWhitespace(letra)) {
                     if (es_letra) {
                         devuelta_letra = letra;
                         break;
                     } else {
                         if (letra == '\n') {
-                            error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar un comienzo de texto válido. ");
+                            error.poner("(" + linea_num + ") " + "Se ha encontrado: nueva-linea en lugar un texto. ");
                             ret = false;
                             break;
                         }
@@ -196,7 +275,7 @@ public class textos_gramaticales {
             if (error.es_nulo()) {
                 error.poner(""); //NOI18N
             }
-            error.poner("(" + linea_num + ") " + "leer_token_entre_espacios. " + error.dar());
+            error.poner("(" + linea_num + ") " + "leer_texto_entre_espacios. " + error.dar());
             ret = false;
         }
         return validar_lectura(ret);
@@ -206,6 +285,7 @@ public class textos_gramaticales {
         boolean ret = true;
         char letra;
         try {
+            error.poner("(" + linea_num + ")");
             while (true) {
                 letra = leer(error);
                 if (letra == ((char) -1)) {
@@ -216,8 +296,7 @@ public class textos_gramaticales {
                 if (letra == '\n') {
                     break;
                 } else if (Character.isWhitespace(letra) == false) {
-                    devuelta_letra = letra;
-                    error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar de nueva-linea. ");
+                    error.poner("(" + linea_num + ") " + "Se ha encontrado: \'" + letra + "\' en lugar de nueva-linea. ");
                     ret = false;
                     break;
                 }
@@ -239,6 +318,7 @@ public class textos_gramaticales {
         String leido = "";
         int i = 0;
         try {
+            error.poner("(" + linea_num + ")");
             while (true) {
                 if (i >= num) {
                     break;
@@ -250,7 +330,7 @@ public class textos_gramaticales {
                     break;
                 }
                 if (letra != ' ') {
-                    error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar de " + num + " espacios. ");
+                    error.poner("(" + linea_num + ") " + "Se ha encontrado: \'" + letra + "\' en lugar de " + num + " espacios. ");
                     ret = false;
                     break;
                 } else {
@@ -278,13 +358,14 @@ public class textos_gramaticales {
         boolean ret = true;
         char letra;
         try {
+            error.poner("(" + linea_num + ")");
             while (true) {
                 letra = leer(error);
                 if (letra == ((char) -1)) {
                     break;
                 }
                 if (Character.isWhitespace(letra) == false) {
-                    error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar de espacio blanco. ");
+                    error.poner("(" + linea_num + ") " + "Se ha encontrado: \'" + letra + "\' en lugar de espacio blanco. ");
                     ret = false;
                     break;
                 }
@@ -309,6 +390,7 @@ public class textos_gramaticales {
         int i = 0;
         int j = 0;
         try {
+            error.poner("(" + linea_num + ")");
             tam = limite.length();
             buffer_array = new char[tam];
             while (true) {
@@ -347,7 +429,6 @@ public class textos_gramaticales {
             }
             if (ret) {
                 texto_libre.poner(texto + new String(buffer_array));
-//                repetir_lectura = repetir_lectura + new String(buffer_array);
             } else {
                 texto_libre.poner("");
             }
@@ -356,7 +437,7 @@ public class textos_gramaticales {
             if (error.es_nulo()) {
                 error.poner(""); //NOI18N
             }
-            error.poner("(" + linea_num + ") " + "leer_texto_libre. " + error.dar());
+            error.poner("(" + linea_num + ") " + "leer_texto_con_limite. " + error.dar());
             ret = false;
         }
         return validar_lectura(ret);
@@ -367,6 +448,7 @@ public class textos_gramaticales {
         String texto = "";
         char letra;
         try {
+            error.poner("(" + linea_num + ")");
             while (true) {
                 letra = leer(error);
                 if (letra == ((char) -1)) {
@@ -390,7 +472,7 @@ public class textos_gramaticales {
             if (error.es_nulo()) {
                 error.poner(""); //NOI18N
             }
-            error.poner("(" + linea_num + ") " + "leer_texto_libre. " + error.dar());
+            error.poner("(" + linea_num + ") " + "leer_linea. " + error.dar());
             ret = false;
         }
         return validar_lectura(ret);
@@ -402,12 +484,21 @@ public class textos_gramaticales {
         String texto_prueba = "";
         char letra;
         try {
+            error.poner("(" + linea_num + ")");
             while (true) {
-                letra = leer(error);
-                if (letra == ((char) -1)) {
-                    error.poner("(" + linea_num + ") " + "Fin de archivo inesperado. ");
-                    ret = false;
-                    break;
+                if (texto.isEmpty()) {
+                    letra = leer_con_linea_partida (error);
+                    if (letra == ((char) -1)) {
+                        ret = false;
+                        break;
+                    }
+                } else {
+                    letra = leer(error);
+                    if (letra == ((char) -1)) {
+                        error.concat("(" + linea_num + ") " + "Fin de archivo inesperado. ");
+                        ret = false;
+                        break;
+                    }
                 }
                 if (Character.isWhitespace(letra)) {
                     if (texto.isEmpty() == false) {
@@ -415,7 +506,7 @@ public class textos_gramaticales {
                         break;
                     } else {
                         if (letra == '\n') {
-                            error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar del comienzo de nombre válido. ");
+                            error.poner("(" + linea_num + ") " + "Se ha encontrado: nueva-linea en lugar de un nombre a minúsculas. ");
                             ret = false;
                             break;
                         }
@@ -427,7 +518,7 @@ public class textos_gramaticales {
                         if (texto_prueba.matches("[a-zñçáéíóú]")) {
                             texto = texto + texto_prueba;
                         } else {
-                            error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar del comienzo de nombre válido. ");
+                            error.poner("(" + linea_num + ") " + "Se ha encontrado: \'" + letra + "\' en lugar de la primera letra de un nombre a minúsculas. ");
                             ret = false;
                             break;
                         }
@@ -435,7 +526,7 @@ public class textos_gramaticales {
                         if (texto_prueba.matches("[a-zñçáéíóú0-9]")) {
                             texto = texto + texto_prueba;
                         } else {
-                            error.poner("(" + linea_num + ") " + "Se ha encontrado: " + letra + " en lugar de una letra válida. ");
+                            error.poner("(" + linea_num + ") " + "Se ha encontrado: \'" + letra + "\' en lugar de la siguiente letra de un nombre a minúsculas. ");
                             ret = false;
                             break;
                         }
@@ -452,7 +543,7 @@ public class textos_gramaticales {
             if (error.es_nulo()) {
                 error.poner(""); //NOI18N
             }
-            error.poner("(" + linea_num + ") " + "leer_nombre. " + error.dar());
+            error.poner("(" + linea_num + ") " + "leer_nombre_m. " + error.dar());
             ret = false;
         }
         return validar_lectura(ret);
@@ -498,17 +589,20 @@ public class textos_gramaticales {
             texto_singular = texto_singular.trim();
             if (texto_singular.endsWith("s")) {
                 ret = false;
-                error.poner( texto_singular + ": deben estar en singular. ");
+                error.poner( texto_singular + ": deben ser singular. ");
             }
         }
         return ret;
     }                    
 
-    public boolean leer_verbo(textos verbo, textos error) {
+    public boolean leer_verbo_o_operador(textos verbo_o_operador, textos error) {
         boolean ret = true;
-        ret = leer_nombre_m(true, verbo, error);
+        ret = leer_nombre_m(true, verbo_o_operador, error);
         if (ret) {
-            ret = validar_verbo(verbo.leer_texto(), error);
+            // Los operadores tienen una longitud máxima de 3 caracteres.
+            if (verbo_o_operador.length() > 3) {
+                ret = validar_verbo(verbo_o_operador.leer_texto(), error);
+            }
         }
         return ret;
     }
@@ -547,17 +641,16 @@ public class textos_gramaticales {
         return ret;
     }
 
-//    public boolean descartar_hasta_texto(String limite, textos error)
-//    {
-//        boolean ret = true;
-//        textos texto = new textos();
-//        devueltos_texto = "";
-//        ret = leer_texto_con_limite(limite, texto, error);
-//        if (ret) {
-//            ret = leer_texto_entre_espacios(texto, error);
-//        }
-//        return ret;
-//    }
+    public boolean leer_texto_hasta_limite(String limite, textos texto, textos error)
+    {
+        boolean ret = true;
+        ret = leer_texto_con_limite(limite, texto, error);
+        if (ret) {
+            texto.substring(0, texto.length() - limite.length());
+            ret = devolver_texto(limite, error);
+        }
+        return ret;
+    }
     
     public boolean leer_esperado(String esperado_texto, textos leido_texto, textos error)
     {
@@ -566,17 +659,17 @@ public class textos_gramaticales {
         if (ret) {
             if (leido_texto.leer_texto().trim().equals(esperado_texto) == false) {
                 ret = false;
-                error.poner("(" + linea_num + ") " + "Se esperaba: " + esperado_texto + " y se ha encontrado: " + leido_texto.leer_texto());
+                error.poner("(" + linea_num + ") " + "Se esperaba: \'" + esperado_texto + "\' y se ha encontrado: \'" + leido_texto.leer_texto() + "\'");
             }
         }
         return ret;
     }
 
-    public boolean leer_texto_no_lala(textos texto_libre, textos error) {
+    public boolean leer_texto_no_codigo(String limite, textos texto_libre, textos error) {
         boolean ret = true;
         int pos;
         String resto;
-        ret = leer_texto_con_limite("/no_lala", texto_libre, error);
+        ret = leer_texto_con_limite(limite, texto_libre, error);
         if (ret) {
             pos = texto_libre.lastIndexOf("\n");
             if (pos > 0) {
@@ -584,7 +677,7 @@ public class textos_gramaticales {
                 texto_libre.substring(0, pos);
                 if (resto.trim().isEmpty() == false) {
                     ret = false;
-                    error.poner("(" + linea_num + ") " + "El texto no_lala debe terminar en nueva-linea. ");                    
+                    error.poner("(" + linea_num + ") " + "El texto que no es código, debe terminar en nueva-linea. ");                    
                 }
                 ret = devolver_texto(resto, error);
             }

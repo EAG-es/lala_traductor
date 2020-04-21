@@ -7,9 +7,9 @@ package innui.lala.traductor;
 
 import innui.contextos.contextos;
 import innui.contextos.textos;
-import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_final_bien;
 import java.io.File;
 import static java.lang.System.out;
+import static innui.lala.traductor.reglas_gramaticales_extendidas.estado_bien;
 
 /**
  *
@@ -34,6 +34,7 @@ public class lala_traductores {
         boolean es_abierta_escritura = false;
         String ruta_con_lala;
         textos error = new textos();
+        textos mensaje_texto = new textos();
         String resultado;
         lala_reglas_gramaticales lala_regla_gramatical = null;
         lalas_a_javas lala_a_java = null;
@@ -96,12 +97,15 @@ public class lala_traductores {
             if (ret) {
                 es_abierta_escritura = true;
                 resultado = lala_regla_gramatical.inicio_lala.procesar_regla_gramatical_extendida(contexto, error);
-                if (resultado.equals(estado_final_bien)) {
+                error.poner("");
+                for (String mensaje: lala_regla_gramatical.inicio_lala.regla_gramatical_extendida.mensajes_error_lista) {
+                    error.concat(mensaje + "\n");
+                }
+                if (resultado.equals(estado_bien)) {
                     error.poner("Archivo generado: " + ruta);
-                } else {
-                    error.poner("");
-                    for (String mensaje: lala_regla_gramatical.inicio_lala.regla_gramatical_extendida.mensajes_error_lista) {
-                        error = error.concat(mensaje + "\n");
+                    ret = lala_regla_gramatical.obtener_analisis_final(mensaje_texto, error);
+                    if (ret) {
+                        error.concat("\n" + mensaje_texto.leer_texto());
                     }
                 }
             }
